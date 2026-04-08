@@ -1,11 +1,13 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-// Import Components - Đảm bảo chữ "c" trong components viết thường y hệt thư mục của bạn
 import Header from './components/Header'; 
 import Home from './components/Home';
 import DetailPage from './components/DetailPage';
 import ListAnime from './components/ListAnime';
 import WatchPage from './components/WatchPage';
+// Thêm 2 components mới
+import Login from './components/Login';
+import Register from './components/Register';
 
 function App() {
   return (
@@ -19,8 +21,11 @@ function App() {
           <Route path="/danh-sach" element={<ListAnime />} />
           <Route path="/danh-sach/:slug" element={<ListAnime />} /> 
           <Route path="/the-loai/:slug" element={<ListAnime />} />
-          <Route path="/season/:slug" element={<ListAnime />} />
           <Route path="/tim-kiem/:keyword" element={<ListAnime />} />
+          
+          {/* Routes cho Đăng nhập / Đăng ký */}
+          <Route path="/dang-nhap" element={<Login />} />
+          <Route path="/dang-ky" element={<Register />} />
         </Routes>
       </main>
     </BrowserRouter>
