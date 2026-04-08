@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import useSWR from 'swr';
 import { phimApi } from '../services/phimApi';
+import CommentSection from './CommentSection'; // Import component bình luận
 
 const fetchDetail = async (slug: string) => {
   const data = await phimApi.getAnimeDetail(slug);
@@ -44,6 +45,7 @@ export default function DetailPage() {
 
       {/* CONTENT CHÍNH */}
       <div className="relative z-10 px-4 pt-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        {/* Breadcrumb */}
         <div className="flex items-center gap-2 pb-3 mb-8 text-sm text-gray-400 border-b border-white/10">
           <Link to="/" className="hover:text-[#d9534f] transition-colors">Trang chủ</Link>
           <span>/</span>
@@ -51,6 +53,7 @@ export default function DetailPage() {
         </div>
 
         <div className="flex flex-col gap-8 md:flex-row">
+          {/* CỘT TRÁI: POSTER & NÚT XEM PHIM */}
           <div className="flex-shrink-0 w-full md:w-64">
             <div className="relative aspect-[2/3] overflow-hidden border-2 border-white/5 shadow-2xl bg-[#1a1a1a] rounded-sm">
               <img src={posterUrl} alt={movie.name} className="object-cover w-full h-full" />
@@ -60,6 +63,7 @@ export default function DetailPage() {
             </div>
           </div>
 
+          {/* CỘT PHẢI: CHI TIẾT */}
           <div className="flex-1">
             <h1 className="text-4xl md:text-5xl font-oswald font-bold text-[#d9534f] uppercase tracking-wide leading-tight mb-2">{movie.name}</h1>
             <h2 className="mb-6 text-xl italic text-gray-400 font-roboto">{movie.origin_name}</h2>
@@ -94,6 +98,8 @@ export default function DetailPage() {
               <p className="col-span-1 md:col-span-2"><strong className="text-gray-500">Thể loại:</strong> {movie.category?.map((c: any) => c.name).join(', ') || 'Đang cập nhật'}</p>
               <p className="col-span-1 md:col-span-2"><strong className="text-gray-500">Quốc gia:</strong> {movie.country?.map((c: any) => c.name).join(', ') || 'Đang cập nhật'}</p>
             </div>
+
+            <CommentSection animeSlug={slug || 'unknown'} />
           </div>
         </div>
       </div>
