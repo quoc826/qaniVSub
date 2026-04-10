@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import useSWR from 'swr';
 import { phimApi } from '../services/phimApi';
 import CommentSection from './CommentSection'; // Import component bình luận
+import SEO from './SEO'; // <-- ĐÃ THÊM IMPORT SEO
 
 const fetchDetail = async (slug: string) => {
   const data = await phimApi.getAnimeDetail(slug);
@@ -36,9 +37,20 @@ export default function DetailPage() {
 
   const posterUrl = getImgUrl(movie.thumb_url);
   const bannerUrl = getImgUrl(movie.poster_url);
+  
+  // Xử lý description gọn gàng cho SEO
+  const cleanDescription = movie.content ? movie.content.replace(/<[^>]*>?/gm, '').substring(0, 160) : `Xem phim ${movie.name} Vietsub.`;
 
   return (
     <div className="relative min-h-screen bg-[#0b0f1a] text-white font-roboto pb-24">
+      {/* KHỐI SEO ĐƯỢC CHÈN VÀO ĐÂY */}
+      <SEO 
+        title={`Xem phim ${movie.name} Vietsub HD`}
+        description={`${cleanDescription}...`}
+        keywords={`${movie.name}, ${movie.origin_name}, phim ${movie.name} vietsub, xem phim ${movie.name}`}
+        image={posterUrl}
+      />
+
       {/* BACKGROUND MỜ */}
       <div className="absolute top-0 left-0 w-full h-[600px] bg-center bg-cover opacity-20 blur-md" style={{ backgroundImage: `url(${bannerUrl})` }}></div>
       <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-t from-[#0b0f1a] to-transparent"></div>

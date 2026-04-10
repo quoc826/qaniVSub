@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination, EffectFade } from 'swiper/modules';
 import useSWR from 'swr';
 import { phimApi } from '../services/phimApi';
-
+import SEO from './SEO'; // <-- ĐÃ THÊM IMPORT SEO
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -65,6 +65,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0b0f1a] text-white pb-24 selection:bg-[#d9534f]">
+      {/* KHỐI SEO ĐƯỢC CHÈN VÀO ĐÂY */}
+      <SEO 
+        title="Xem Anime Vietsub Online Chất Lượng Cao Mới Nhất 2026"
+        description="QaniVietSub - Nơi xem anime vietsub online nhanh nhất, chất lượng Full HD. Cập nhật liên tục các bộ phim hoạt hình Nhật Bản hot nhất mỗi ngày. Không giật lag."
+      />
+
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         
         {bannerCards.length > 0 && (

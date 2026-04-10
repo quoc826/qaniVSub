@@ -8,4 +8,4 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error("Lỗi: Thiếu biến môi trường Supabase. Hãy kiểm tra file .env");
 }
 
-export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '');
+export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || ''); 

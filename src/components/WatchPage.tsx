@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import useSWR from 'swr';
 import { phimApi } from '../services/phimApi';
 import CommentSection from './CommentSection';
+import SEO from './SEO'; // <-- ĐÃ THÊM IMPORT SEO
 
 const fetchWatchData = async (slug: string) => {
   const data = await phimApi.getAnimeDetail(slug);
@@ -50,11 +51,19 @@ export default function WatchPage() {
 
   return (
     <div className="min-h-screen bg-[#0b0f1a] text-white font-roboto pb-24">
+      {/* KHỐI SEO ĐƯỢC CHÈN VÀO ĐÂY */}
+      <SEO 
+        title={`Xem ${movie.name} - Tập ${currentEpisode?.name || 'Mới'} Vietsub`}
+        description={`Xem anime ${movie.name} Tập ${currentEpisode?.name || 'Mới'} Vietsub HD chất lượng cao, tốc độ nhanh, không giật lag tại QaniVietSub.`}
+        keywords={`${movie.name} tập ${currentEpisode?.name}, xem anime ${movie.name}, ${movie.origin_name}`}
+        image={posterUrl}
+      />
+
       <div className="px-4 pt-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex items-center gap-2 pb-3 mb-6 text-sm text-gray-400 border-b border-white/10">
           <Link to="/" className="hover:text-[#d9534f] transition-colors">Trang chủ</Link> <span>/</span>
           <Link to={`/phim/${slug}`} className="hover:text-[#d9534f] transition-colors">{movie.name}</Link> <span>/</span>
-          <span className="text-[#d9534f]">Tập {currentEpisode?.name}</span>
+          <span className="text-[#d9534f]">{currentEpisode?.name}</span>
         </div>
 
         <div className="grid items-start grid-cols-1 gap-6 lg:grid-cols-3">

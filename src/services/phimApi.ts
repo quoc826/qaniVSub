@@ -4,7 +4,7 @@ export const phimApi = {
   getAnimeList: async (slug: string = 'hoat-hinh', page: number = 1, limit: number = 40) => {
     try {
       const response = await fetch(`${API_BASE_URL}/danh-sach?slug=${slug}&page=${page}&limit=${limit}`);
-      if (!response.ok) throw new Error('Lỗi');
+      if (!response.ok) throw new Error('Error');
       return await response.json();
     } catch (error) {
       throw error;
@@ -14,7 +14,7 @@ export const phimApi = {
   getAnimeByCategory: async (categorySlug: string, page: number = 1, limit: number = 40) => {
     try {
       const response = await fetch(`${API_BASE_URL}/the-loai?slug=${categorySlug}&page=${page}&limit=${limit}`);
-      if (!response.ok) throw new Error('Lỗi');
+      if (!response.ok) throw new Error('Error');
       return await response.json();
     } catch (error) {
       throw error;
@@ -24,7 +24,7 @@ export const phimApi = {
   searchAnime: async (keyword: string, page: number = 1, limit: number = 40) => {
     try {
       const response = await fetch(`${API_BASE_URL}/tim-kiem?keyword=${keyword}&page=${page}&limit=${limit}`);
-      if (!response.ok) throw new Error('Lỗi');
+      if (!response.ok) throw new Error('Error');
       return await response.json();
     } catch (error) {
       throw error;
@@ -34,7 +34,7 @@ export const phimApi = {
   getAnimeDetail: async (slug: string) => {
     try {
       const response = await fetch(`${API_BASE_URL}/phim?slug=${slug}`);
-      if (!response.ok) throw new Error('Lỗi');
+      if (!response.ok) throw new Error('Error');
       return await response.json();
     } catch (error) {
       throw error;
@@ -47,9 +47,7 @@ export const phimApi = {
       if (urlPath.startsWith('http')) return urlPath;
       return `${imageDomain}/${urlPath}`;
     };
-
     const countries = item.country?.map((c: any) => c.slug) || [];
-
     return {
       id: item._id || item.slug || Math.random().toString(),
       slug: item.slug || "", 
