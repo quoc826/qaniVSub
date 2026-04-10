@@ -1,11 +1,10 @@
-const API_BASE_URL = 'https://phimapi.com';
+const API_BASE_URL = '/api';
 
 export const phimApi = {
-  // Lấy danh sách (Bỏ tham số country gây lỗi API)
   getAnimeList: async (slug: string = 'hoat-hinh', page: number = 1, limit: number = 40) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/v1/api/danh-sach/${slug}?page=${page}&limit=${limit}`);
-      if (!response.ok) throw new Error('Lỗi lấy danh sách anime');
+      const response = await fetch(`${API_BASE_URL}/danh-sach?slug=${slug}&page=${page}&limit=${limit}`);
+      if (!response.ok) throw new Error('Lỗi');
       return await response.json();
     } catch (error) {
       throw error;
@@ -14,8 +13,8 @@ export const phimApi = {
 
   getAnimeByCategory: async (categorySlug: string, page: number = 1, limit: number = 40) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/v1/api/the-loai/${categorySlug}?page=${page}&limit=${limit}`);
-      if (!response.ok) throw new Error('Lỗi lấy anime theo thể loại');
+      const response = await fetch(`${API_BASE_URL}/the-loai?slug=${categorySlug}&page=${page}&limit=${limit}`);
+      if (!response.ok) throw new Error('Lỗi');
       return await response.json();
     } catch (error) {
       throw error;
@@ -24,8 +23,8 @@ export const phimApi = {
 
   searchAnime: async (keyword: string, page: number = 1, limit: number = 40) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/v1/api/tim-kiem?keyword=${keyword}&page=${page}&limit=${limit}`);
-      if (!response.ok) throw new Error('Lỗi tìm kiếm');
+      const response = await fetch(`${API_BASE_URL}/tim-kiem?keyword=${keyword}&page=${page}&limit=${limit}`);
+      if (!response.ok) throw new Error('Lỗi');
       return await response.json();
     } catch (error) {
       throw error;
@@ -34,8 +33,8 @@ export const phimApi = {
 
   getAnimeDetail: async (slug: string) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/phim/${slug}`);
-      if (!response.ok) throw new Error('Lỗi lấy chi tiết anime');
+      const response = await fetch(`${API_BASE_URL}/phim?slug=${slug}`);
+      if (!response.ok) throw new Error('Lỗi');
       return await response.json();
     } catch (error) {
       throw error;
@@ -49,7 +48,6 @@ export const phimApi = {
       return `${imageDomain}/${urlPath}`;
     };
 
-    // Lấy danh sách quốc gia của phim để Client tự lọc
     const countries = item.country?.map((c: any) => c.slug) || [];
 
     return {
@@ -63,7 +61,7 @@ export const phimApi = {
       views: item.view ? item.view.toLocaleString() : Math.floor(Math.random() * 500000).toLocaleString(),
       status: item.quality ? `${item.quality} ${item.lang || ''}` : "Hoàn tất",
       isCompleted: item.status === 'completed' || (item.episode_current && item.episode_current.toLowerCase().includes('full')),
-      countries: countries // Lưu lại để dùng filter
+      countries: countries 
     };
   }
 };
