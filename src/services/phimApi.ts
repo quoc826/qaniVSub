@@ -1,5 +1,18 @@
 const API_BASE_URL = '/api';
 
+// Hàm tạo blur placeholder (LQIP)
+export const generateBlurDataUrl = (width: number = 10, height: number = 15) => {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    ctx.fillStyle = 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+    ctx.fillRect(0, 0, width, height);
+  }
+  return canvas.toDataURL();
+};
+
 export const phimApi = {
   getAnimeList: async (slug: string = 'hoat-hinh', page: number = 1, limit: number = 40) => {
     try {
@@ -54,6 +67,7 @@ export const phimApi = {
       title: item.name || item.origin_name || "Anime",
       image: getImgUrl(item.thumb_url || item.poster_url),
       banner: getImgUrl(item.poster_url || item.thumb_url),
+      blurDataUrl: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 10 15%22%3E%3Crect fill=%22%231a1a2e%22 width=%2210%22 height=%2215%22/%3E%3C/svg%3E',
       rating: "9.5", 
       episodes: item.episode_current || "01",
       views: item.view ? item.view.toLocaleString() : Math.floor(Math.random() * 500000).toLocaleString(),

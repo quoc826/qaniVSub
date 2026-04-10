@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import useSWR from 'swr';
 import { phimApi } from '../services/phimApi';
+import LazyImage from './LazyImage';
 import CommentSection from './CommentSection';
 import SEO from './SEO'; // <-- ĐÃ THÊM IMPORT SEO
 
@@ -82,7 +83,7 @@ export default function WatchPage() {
 
             <div className="flex flex-col gap-4 p-4 border rounded-sm sm:flex-row bg-black/30 border-white/5">
               <div className="flex-shrink-0 w-32 mx-auto sm:w-40 sm:mx-0">
-                <img src={posterUrl} alt="" className="w-full aspect-[2/3] object-cover border border-white/10 shadow-lg rounded-sm" />
+                <LazyImage src={posterUrl} alt="" className="w-full aspect-[2/3] object-cover border border-white/10 shadow-lg rounded-sm" />
               </div>
               <div className="flex-1 overflow-hidden">
                 <h1 className="text-2xl sm:text-3xl font-oswald font-bold text-[#d9534f] uppercase mb-1">{movie.name}</h1>

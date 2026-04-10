@@ -3,10 +3,14 @@
     {
       "source": "/api/(.*)",
       "destination": "/api/$1"
-    },
+    }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "routes": [
     {
-      "source": "/((?!api/).*)",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }

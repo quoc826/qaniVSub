@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import useSWR from 'swr';
 import { phimApi } from '../services/phimApi';
+import LazyImage from './LazyImage';
 import CommentSection from './CommentSection'; // Import component bình luận
 import SEO from './SEO'; // <-- ĐÃ THÊM IMPORT SEO
 
@@ -68,7 +69,7 @@ export default function DetailPage() {
           {/* CỘT TRÁI: POSTER & NÚT XEM PHIM */}
           <div className="flex-shrink-0 w-full md:w-64">
             <div className="relative aspect-[2/3] overflow-hidden border-2 border-white/5 shadow-2xl bg-[#1a1a1a] rounded-sm">
-              <img src={posterUrl} alt={movie.name} className="object-cover w-full h-full" />
+              <LazyImage src={posterUrl} alt={movie.name} className="object-cover w-full h-full" />
               <Link to={`/xem-phim/${slug}`} className="absolute bottom-0 left-0 block w-full py-3 font-bold text-center text-white uppercase transition-colors bg-[#d9534f] font-oswald hover:bg-white hover:text-black shadow-[0_-5px_20px_rgba(217,83,79,0.4)]">
                 Xem Phim
               </Link>

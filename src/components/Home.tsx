@@ -4,7 +4,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination, EffectFade } from 'swiper/modules';
 import useSWR from 'swr';
 import { phimApi } from '../services/phimApi';
-import SEO from './SEO'; // <-- ĐÃ THÊM IMPORT SEO
+import SEO from './SEO';
+import LazyImage from './LazyImage';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -94,7 +95,7 @@ export default function Home() {
               {swiperCards.map((anime) => (
                 <SwiperSlide key={`swiper-${anime.id}`}>
                   <Link to={`/phim/${anime.slug}`} className="block relative aspect-[2/3] overflow-hidden shadow-lg group rounded-sm">
-                    <img src={anime.image} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" alt={anime.title} />
+                    <LazyImage src={anime.image} alt={anime.title} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" placeholderSrc={anime.blurDataUrl} />
                     <div className="absolute top-2 left-2 bg-[#d9534f] text-[9px] px-2 py-0.5 font-oswald font-bold uppercase shadow-xl">Hot</div>
                     <div className="absolute inset-0 opacity-60 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
                     <p className="absolute bottom-2 left-2 right-2 text-[10px] font-bold truncate text-white uppercase italic group-hover:text-[#d9534f] transition-colors">{anime.title}</p>
@@ -115,7 +116,7 @@ export default function Home() {
                 {bannerCards.map((anime) => (
                   <SwiperSlide key={`banner-${anime.id}`}>
                     <Link to={`/phim/${anime.slug}`} className="relative block w-full h-full group">
-                      <img src={anime.banner} className="object-cover w-full h-full" alt={anime.title} />
+                      <LazyImage src={anime.banner} alt={anime.title} className="object-cover w-full h-full" placeholderSrc={anime.blurDataUrl} />
                       <div className="absolute inset-0 bg-gradient-to-r from-[#0b0f1a] via-[#0b0f1a]/40 to-transparent"></div>
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f1a] via-transparent to-transparent"></div>
                       <div className="absolute bottom-0 left-0 max-w-4xl p-8 md:p-24">
@@ -145,7 +146,7 @@ export default function Home() {
           {gridCards.map((anime, index) => (
             <Link to={`/phim/${anime.slug}`} key={`grid-${anime.id}-${index}`} className="relative flex flex-col block cursor-pointer font-roboto group">
               <div className="relative aspect-[2/3] overflow-hidden bg-[#1a1a1a] rounded-sm">
-                <img src={anime.image} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" alt={anime.title} />
+                <LazyImage src={anime.image} alt={anime.title} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" placeholderSrc={anime.blurDataUrl} />
                 <div className="absolute top-2 left-2 z-20 flex flex-col items-center bg-[#d9534f] text-white text-[9px] font-oswald px-1.5 py-0.5 shadow-md">
                   <span className="leading-none tracking-widest uppercase">Tập</span>
                   <span className="text-[13px] font-bold leading-none mt-0.5">{anime.episodes}</span>

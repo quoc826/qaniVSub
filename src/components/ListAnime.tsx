@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
 import useSWR from 'swr';
 import { phimApi } from '../services/phimApi';
+import LazyImage from './LazyImage';
 
 const filterAnime = (animeList: any[]) => {
   const seen = new Set();
@@ -90,7 +91,7 @@ export default function ListAnime() {
             {gridCards.map((anime: any, index: number) => (
               <Link to={`/phim/${anime.slug}`} key={`${anime.id}-${index}`} className="relative flex flex-col block cursor-pointer group">
                 <div className="relative aspect-[2/3] overflow-hidden bg-[#1a1a1a] rounded-sm">
-                  <img src={anime.image} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" alt={anime.title} />
+                  <LazyImage src={anime.image} alt={anime.title} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" placeholderSrc={anime.blurDataUrl} />
                   <div className="absolute top-2 left-2 z-20 flex flex-col items-center bg-[#d9534f] text-white text-[9px] font-oswald px-1.5 py-0.5 shadow-md">
                     <span className="leading-none tracking-widest uppercase">Tập</span>
                     <span className="text-[13px] font-bold leading-none mt-0.5">{anime.episodes}</span>
