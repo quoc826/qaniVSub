@@ -16,7 +16,7 @@ export const generateBlurDataUrl = (width: number = 10, height: number = 15) => 
 export const phimApi = {
   getAnimeList: async (slug: string = 'hoat-hinh', page: number = 1, limit: number = 40) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/danh-sach?slug=${slug}&page=${page}&limit=${limit}`);
+      const response = await fetch(`${API_BASE_URL}/v1/api/danh-sach/${slug}?page=${page}&limit=${limit}`);
       if (!response.ok) throw new Error('Error');
       return await response.json();
     } catch (error) {
@@ -26,7 +26,7 @@ export const phimApi = {
 
   getAnimeByCategory: async (categorySlug: string, page: number = 1, limit: number = 40) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/the-loai?slug=${categorySlug}&page=${page}&limit=${limit}`);
+      const response = await fetch(`${API_BASE_URL}/v1/api/the-loai/${categorySlug}?page=${page}&limit=${limit}`);
       if (!response.ok) throw new Error('Error');
       return await response.json();
     } catch (error) {
@@ -36,7 +36,7 @@ export const phimApi = {
 
   searchAnime: async (keyword: string, page: number = 1, limit: number = 40) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/tim-kiem?keyword=${keyword}&page=${page}&limit=${limit}`);
+      const response = await fetch(`${API_BASE_URL}/v1/api/tim-kiem?keyword=${keyword}&page=${page}&limit=${limit}`);
       if (!response.ok) throw new Error('Error');
       return await response.json();
     } catch (error) {
@@ -46,7 +46,7 @@ export const phimApi = {
 
   getAnimeDetail: async (slug: string) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/phim?slug=${slug}`);
+      const response = await fetch(`${API_BASE_URL}/phim/${slug}`);
       if (!response.ok) throw new Error('Error');
       return await response.json();
     } catch (error) {

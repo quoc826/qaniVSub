@@ -6,6 +6,7 @@ import useSWR from 'swr';
 import { phimApi } from '../services/phimApi';
 import SEO from './SEO';
 import LazyImage from './LazyImage';
+import AnimeCard from './AnimeCard'; // Import AnimeCard mới
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -142,26 +143,10 @@ export default function Home() {
             </h2>
         </div>
 
+        {/* THAY THẾ BẰNG ANIMECARD VỪA TẠO */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-          {gridCards.map((anime, index) => (
-            <Link to={`/phim/${anime.slug}`} key={`grid-${anime.id}-${index}`} className="relative flex flex-col block cursor-pointer font-roboto group">
-              <div className="relative aspect-[2/3] overflow-hidden bg-[#1a1a1a] rounded-sm">
-                <LazyImage src={anime.image} alt={anime.title} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" placeholderSrc={anime.blurDataUrl} />
-                <div className="absolute top-2 left-2 z-20 flex flex-col items-center bg-[#d9534f] text-white text-[9px] font-oswald px-1.5 py-0.5 shadow-md">
-                  <span className="leading-none tracking-widest uppercase">Tập</span>
-                  <span className="text-[13px] font-bold leading-none mt-0.5">{anime.episodes}</span>
-                </div>
-                <div className="absolute bottom-2 right-2 z-20 bg-black/80 text-white text-[11px] font-bold px-1.5 py-0.5 flex items-center gap-1 rounded-sm">
-                  <span className="text-[#f1c40f] text-[10px]">★</span> {anime.rating}
-                </div>
-              </div>
-              <div className="pt-2 pb-1">
-                <h2 className="text-[14px] font-bold text-[#e5e5e5] line-clamp-2 leading-[1.3] font-roboto mt-1 group-hover:text-[#d9534f] transition-colors">
-                  {anime.title}
-                </h2>
-                <span className="block mt-1 text-[12px] text-[#888]">Lượt xem: {anime.views}</span>
-              </div>
-            </Link>
+          {gridCards.map((anime: any, index: number) => (
+            <AnimeCard key={`grid-${anime.id}-${index}`} anime={anime} />
           ))}
         </div>
 

@@ -9,6 +9,7 @@ import WatchPage from './components/WatchPage';
 import Login from './components/Login';
 import Register from './components/Register';
 import Footer from './components/Footer';
+import FavoritesPage from './components/FavoritesPage'; // Đã thêm import trang Yêu Thích
 
 // 1. Viết cái hàm cuộn trang nằm ngay đây cho gọn, khỏi tạo file mới
 function ScrollToTop() {
@@ -37,6 +38,9 @@ function App() {
             <Route path="/danh-sach/:slug" element={<ListAnime />} /> 
             <Route path="/the-loai/:slug" element={<ListAnime />} />
             <Route path="/tim-kiem/:keyword" element={<ListAnime />} />
+            
+            {/* Đã thêm Route cho trang Yêu Thích */}
+            <Route path="/yeu-thich" element={<FavoritesPage />} />
             
             <Route path="/dang-nhap" element={<Login />} />
             <Route path="/dang-ky" element={<Register />} />

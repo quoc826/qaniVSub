@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from '../services/supabaseClient'; // Đảm bảo đường dẫn này đúng với file bạn đã tạo
+import { supabase } from '../services/supabaseClient';
 
 export default function Header() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [keyword, setKeyword] = useState('');
-  const [user, setUser] = useState<any>(null); // Lưu thông tin người dùng
+  const [user, setUser] = useState<any>(null);
   const navigate = useNavigate();
   const headerRef = useRef<HTMLDivElement>(null);
 
@@ -27,19 +27,16 @@ export default function Header() {
   ];
 
   useEffect(() => {
-    // 1. Lấy thông tin user hiện tại khi load trang
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
       setUser(data.user);
     };
     getUser();
 
-    // 2. Lắng nghe sự thay đổi trạng thái đăng nhập (Login/Logout)
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
-    // Xử lý đóng menu khi click ra ngoài
     const handleClickOutside = (event: MouseEvent) => {
       if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
         setOpenDropdown(null);
@@ -49,7 +46,7 @@ export default function Header() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-      authListener.subscription.unsubscribe(); // Hủy lắng nghe khi component unmount
+      authListener.subscription.unsubscribe();
     };
   }, []);
 
@@ -70,7 +67,9 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-black border-b shadow-xl border-white/10" ref={headerRef}>
       <div className="flex items-center justify-between h-20 gap-3 px-4 mx-auto max-w-7xl font-roboto">
-        <Link to="/"><img src="/shigy.gif" alt="Logo" className="flex-shrink-0 h-10 transition-transform sm:h-14 hover:scale-105" /></Link>
+        <Link to="/">
+          <img src="/shigy.gif" alt="Logo" className="flex-shrink-0 h-10 transition-transform sm:h-14 hover:scale-105" />
+        </Link>
 
         <nav className="items-center hidden space-x-2 text-sm font-bold uppercase lg:flex font-oswald">
           <Link to="/" className="px-3 py-2 text-white hover:text-[#d9534f]">Trang Chủ</Link>
@@ -103,8 +102,7 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center justify-end flex-1 gap-2 sm:gap-4">
-          {/* Ô TÌM KIẾM - Đã bỏ hidden để hiện trên mọi thiết bị */}
-          <form onSubmit={handleSearch} className="relative flex-1 max-w-[150px] sm:max-w-64">
+          <form onSubmit={handleSearch} className="relative flex-1 max-w-[120px] sm:max-w-64">
             <input 
               type="text" 
               value={keyword} 
@@ -114,22 +112,37 @@ export default function Header() {
             />
           </form>
           
-          {/* KIỂM TRA TRẠNG THÁI NGƯỜI DÙNG - Giữ nguyên logic hiển thị tên */}
           {user ? (
-            <div className="flex items-center flex-shrink-0 gap-2 sm:gap-3">
-              <div className="flex flex-col items-end">
-                <span className="text-white text-[10px] sm:text-[12px] font-bold uppercase font-oswald leading-none max-w-[70px] sm:max-w-none truncate">
-                  Hi, {user.user_metadata?.display_name || "Thành viên"}
+            <div className="flex items-center flex-shrink-0 gap-3 sm:gap-5">
+              {/* MỤC YÊU THÍCH - HIỂN THỊ TRÊN CẢ MOBILE VÀ PC */}
+              <Link 
+                to="/yeu-thich" 
+                className="flex items-center gap-1.5 group transition-all"
+                title="Danh sách yêu thích"
+              >
+                <span className="text-[#d9534f] text-lg sm:text-xl group-hover:scale-125 transition-transform drop-shadow-[0_0_8px_rgba(217,83,79,0.5)]">♥</span>
+                <span className="hidden sm:inline text-[12px] font-bold uppercase font-oswald text-gray-300 group-hover:text-white">
+                  Yêu Thích
                 </span>
-                <button 
-                  onClick={handleLogout}
-                  className="text-[#d9534f] text-[9px] sm:text-[10px] uppercase font-bold hover:text-white transition-colors"
-                >
-                  Đăng xuất
-                </button>
-              </div>
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#d9534f] flex items-center justify-center text-white font-bold text-[10px] sm:text-xs border border-white/10">
-                {user.user_metadata?.display_name?.charAt(0).toUpperCase() || "U"}
+              </Link>
+
+              <div className="hidden sm:block w-[1px] h-6 bg-white/10"></div>
+
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="flex flex-col items-end">
+                  <span className="text-white text-[10px] sm:text-[12px] font-bold uppercase font-oswald leading-none max-w-[60px] sm:max-w-none truncate">
+                    Hi, {user.user_metadata?.display_name || "Thành viên"}
+                  </span>
+                  <button 
+                    onClick={handleLogout}
+                    className="text-[#d9534f] text-[9px] sm:text-[10px] uppercase font-bold hover:text-white transition-colors mt-1"
+                  >
+                    Đăng xuất
+                  </button>
+                </div>
+                <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-[#d9534f] to-[#b03a37] flex items-center justify-center text-white font-bold text-[10px] sm:text-xs border border-white/20 shadow-lg">
+                  {user.user_metadata?.display_name?.charAt(0).toUpperCase() || "U"}
+                </div>
               </div>
             </div>
           ) : (

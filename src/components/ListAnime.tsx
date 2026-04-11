@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Link, useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import useSWR from 'swr';
 import { phimApi } from '../services/phimApi';
-import LazyImage from './LazyImage';
+import AnimeCard from './AnimeCard'; // Import AnimeCard mới
 
 const filterAnime = (animeList: any[]) => {
   const seen = new Set();
@@ -87,32 +87,16 @@ export default function ListAnime() {
         {error && <div className="mb-8 font-bold text-center text-red-500">Lỗi không thể tải dữ liệu!</div>}
 
         <div className={`transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
+          {/* THAY THẾ BẰNG ANIMECARD VỪA TẠO */}
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {gridCards.map((anime: any, index: number) => (
-              <Link to={`/phim/${anime.slug}`} key={`${anime.id}-${index}`} className="relative flex flex-col block cursor-pointer group">
-                <div className="relative aspect-[2/3] overflow-hidden bg-[#1a1a1a] rounded-sm">
-                  <LazyImage src={anime.image} alt={anime.title} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" placeholderSrc={anime.blurDataUrl} />
-                  <div className="absolute top-2 left-2 z-20 flex flex-col items-center bg-[#d9534f] text-white text-[9px] font-oswald px-1.5 py-0.5 shadow-md">
-                    <span className="leading-none tracking-widest uppercase">Tập</span>
-                    <span className="text-[13px] font-bold leading-none mt-0.5">{anime.episodes}</span>
-                  </div>
-                  <div className="absolute bottom-2 right-2 z-20 bg-black/80 text-white text-[11px] font-bold px-1.5 py-0.5 flex items-center gap-1 rounded-sm">
-                    <span className="text-[#f1c40f] text-[10px]">★</span> {anime.rating}
-                  </div>
-                </div>
-                <div className="pt-2 pb-1">
-                  <h2 className="text-[14px] font-bold text-[#e5e5e5] line-clamp-2 leading-[1.3] font-roboto mt-1 group-hover:text-[#d9534f] transition-colors">
-                    {anime.title}
-                  </h2>
-                </div>
-              </Link>
+              <AnimeCard key={`${anime.id}-${index}`} anime={anime} />
             ))}
           </div>
         </div>
 
         {totalPages > 1 && (
           <div className="flex flex-wrap items-center justify-center gap-2 mt-16 mb-8 font-oswald">
-            {/* Pagination UI giữ nguyên */}
             <span className="px-4 py-2 text-sm font-bold text-gray-400 bg-[#1a1a1a] border border-white/5 uppercase select-none rounded-sm">
               Trang {currentPage} / {totalPages}
             </span>
