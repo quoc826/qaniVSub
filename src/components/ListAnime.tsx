@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import useSWR from 'swr';
 import { phimApi } from '../services/phimApi';
-import AnimeCard from './AnimeCard'; // Import AnimeCard mới
+import AnimeCard from './AnimeCard';
+import SEO from './SEO';
 
+// Lọc Anime Nhật Bản và loại bỏ các phần trùng lặp
 const filterAnime = (animeList: any[]) => {
   const seen = new Set();
   return animeList.filter((anime) => {
@@ -47,14 +49,16 @@ export default function ListAnime() {
   const location = useLocation(); 
   const [currentPage, setCurrentPage] = useState(1);
 
-  // SWR Cache dựa trên Path, Slug, Keyword và Trang
   const { data, error, isLoading } = useSWR(
     ['list', location.pathname, slug, keyword, currentPage],
     fetchList,
     { revalidateOnFocus: false, dedupingInterval: 60000 }
   );
 
-  useEffect(() => { setCurrentPage(1); window.scrollTo({ top: 0, behavior: 'smooth' }); }, [slug, keyword, location.pathname]);
+  useEffect(() => { 
+    setCurrentPage(1); 
+    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+  }, [slug, keyword, location.pathname]);
 
   const gridCards = data?.data || [];
   const totalPages = data?.pagination ? Math.ceil(data.pagination.totalItems / data.pagination.totalItemsPerPage) : 1;
@@ -77,6 +81,11 @@ export default function ListAnime() {
 
   return (
     <div className="min-h-screen bg-[#0b0f1a] text-white pb-24 font-roboto selection:bg-[#d9534f]">
+      <SEO 
+        title={`${title} - QaniVietSub`} 
+        description={`Tổng hợp danh sách ${title.toLowerCase()} vietsub mới nhất tại QaniVietSub.`} 
+      />
+
       <div className="px-4 pt-12 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex items-center gap-4 mb-8">
             <h1 className="text-3xl tracking-wide text-[#d9534f] uppercase border-l-4 font-oswald font-bold border-[#d9534f] pl-4">
@@ -87,10 +96,13 @@ export default function ListAnime() {
         {error && <div className="mb-8 font-bold text-center text-red-500">Lỗi không thể tải dữ liệu!</div>}
 
         <div className={`transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
-          {/* THAY THẾ BẰNG ANIMECARD VỪA TẠO */}
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {gridCards.map((anime: any, index: number) => (
-              <AnimeCard key={`${anime.id}-${index}`} anime={anime} />
+              <AnimeCard 
+                key={`${anime.id}-${index}`} 
+                anime={anime} 
+                priority={index < 6} // Tăng tốc độ tải cho 6 ảnh đầu tiên
+              />
             ))}
           </div>
         </div>

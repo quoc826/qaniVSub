@@ -6,12 +6,15 @@ import useSWR from 'swr';
 import { phimApi } from '../services/phimApi';
 import SEO from './SEO';
 import LazyImage from './LazyImage';
-import AnimeCard from './AnimeCard'; // Import AnimeCard mới
+import AnimeCard from './AnimeCard';
+
+// Import CSS của Swiper
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 
+// Hàm lọc anime Nhật Bản và loại bỏ trùng lặp phần phim (ss1, ss2...)
 const filterAnime = (list: any[]) => {
   const seen = new Set();
   return list.filter((anime) => {
@@ -27,7 +30,7 @@ const filterAnime = (list: any[]) => {
   });
 };
 
-// Hàm fetcher cho SWR
+// Hàm fetch dữ liệu trang chủ từ API
 const fetchHomeData = async () => {
   const [res1, res2, res3] = await Promise.all([
     phimApi.getAnimeList('hoat-hinh', 1, 40),
@@ -42,17 +45,16 @@ const fetchHomeData = async () => {
   const filteredData = filterAnime(mappedData);
 
   return {
-    bannerCards: filteredData.slice(0, 6),
-    swiperCards: filteredData.slice(6, 15),
-    gridCards: filteredData.slice(15, 33)
+    bannerCards: filteredData.slice(0, 6),   // 6 phim làm banner to
+    swiperCards: filteredData.slice(6, 15),  // Phim mới cập nhật (dạng slide nhỏ)
+    gridCards: filteredData.slice(15, 33)    // Danh sách lưới ở dưới
   };
 };
 
 export default function Home() {
-  // SWR lo việc caching, loading và deduplication (lưu cache 5 phút)
   const { data, error, isLoading } = useSWR('home-data', fetchHomeData, {
     revalidateOnFocus: false,
-    dedupingInterval: 300000,
+    dedupingInterval: 300000, // Cache dữ liệu trong 5 phút
   });
 
   if (isLoading) return (
@@ -67,15 +69,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0b0f1a] text-white pb-24 selection:bg-[#d9534f]">
-      {/* KHỐI SEO ĐƯỢC CHÈN VÀO ĐÂY */}
       <SEO 
         title="Xem Anime Vietsub Online Chất Lượng Cao Mới Nhất 2026"
-        description="QaniVietSub - Nơi xem anime vietsub online nhanh nhất, chất lượng Full HD. Cập nhật liên tục các bộ phim hoạt hình Nhật Bản hot nhất mỗi ngày. Không giật lag."
+        description="QaniVietSub - Nơi xem anime vietsub online nhanh nhất, chất lượng Full HD. Cập nhật liên tục các bộ phim hoạt hình Nhật Bản hot nhất mỗi ngày."
       />
 
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         
-        {bannerCards.length > 0 && (
+        {/* --- PHẦN 1: PHIM MỚI CẬP NHẬT (SLIDE NHỎ) --- */}
+        {swiperCards.length > 0 && (
           <>
             <div className="flex items-center gap-4 pt-12 mb-8">
                 <h2 className="text-3xl italic tracking-tighter uppercase font-oswald font-bold text-[#d9534f]">
@@ -96,15 +98,22 @@ export default function Home() {
               {swiperCards.map((anime) => (
                 <SwiperSlide key={`swiper-${anime.id}`}>
                   <Link to={`/phim/${anime.slug}`} className="block relative aspect-[2/3] overflow-hidden shadow-lg group rounded-sm">
-                    <LazyImage src={anime.image} alt={anime.title} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" placeholderSrc={anime.blurDataUrl} />
+                    <LazyImage 
+                      src={anime.image} 
+                      alt={anime.title} 
+                      className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" 
+                    />
                     <div className="absolute top-2 left-2 bg-[#d9534f] text-[9px] px-2 py-0.5 font-oswald font-bold uppercase shadow-xl">Hot</div>
                     <div className="absolute inset-0 opacity-60 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
-                    <p className="absolute bottom-2 left-2 right-2 text-[10px] font-bold truncate text-white uppercase italic group-hover:text-[#d9534f] transition-colors">{anime.title}</p>
+                    <p className="absolute bottom-2 left-2 right-2 text-[10px] font-bold truncate text-white uppercase italic group-hover:text-[#d9534f] transition-colors">
+                      {anime.title}
+                    </p>
                   </Link>
                 </SwiperSlide>
               ))}
             </Swiper>
 
+            {/* --- PHẦN 2: BANNER LỚN (ĐỀ CỬ) --- */}
             <div className="mb-24 font-roboto">
               <Swiper
                 modules={[Autoplay, Pagination, EffectFade]}
@@ -117,11 +126,18 @@ export default function Home() {
                 {bannerCards.map((anime) => (
                   <SwiperSlide key={`banner-${anime.id}`}>
                     <Link to={`/phim/${anime.slug}`} className="relative block w-full h-full group">
-                      <LazyImage src={anime.banner} alt={anime.title} className="object-cover w-full h-full" placeholderSrc={anime.blurDataUrl} />
+                      <LazyImage 
+                        src={anime.banner} 
+                        alt={anime.title} 
+                        className="object-cover w-full h-full" 
+                        priority={true} // ƯU TIÊN TẢI NGAY (KHÔNG LAZY)
+                      />
                       <div className="absolute inset-0 bg-gradient-to-r from-[#0b0f1a] via-[#0b0f1a]/40 to-transparent"></div>
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f1a] via-transparent to-transparent"></div>
                       <div className="absolute bottom-0 left-0 max-w-4xl p-8 md:p-24">
-                        <span className="px-4 py-1 text-[10px] font-oswald font-bold bg-[#d9534f] mb-6 inline-block uppercase tracking-[0.2em] shadow-lg">Đề cử tuần</span>
+                        <span className="px-4 py-1 text-[10px] font-oswald font-bold bg-[#d9534f] mb-6 inline-block uppercase tracking-[0.2em] shadow-lg">
+                          Đề cử tuần
+                        </span>
                         <h1 className="mb-8 text-4xl italic font-black leading-none tracking-tighter uppercase md:text-8xl drop-shadow-2xl group-hover:text-[#d9534f] transition-colors">
                             {anime.title}
                         </h1>
@@ -137,19 +153,20 @@ export default function Home() {
           </>
         )}
 
+        {/* --- PHẦN 3: DANH SÁCH LƯỚI (ANIME ĐANG CHIẾU) --- */}
         <div className="flex items-center gap-4 pt-6 mt-12 mb-8">
             <h2 className="pl-3 text-2xl tracking-wide text-white uppercase border-l-4 font-oswald font-bold border-[#d9534f]">
                 Anime Đang Chiếu
             </h2>
         </div>
 
-        {/* THAY THẾ BẰNG ANIMECARD VỪA TẠO */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {gridCards.map((anime: any, index: number) => (
             <AnimeCard key={`grid-${anime.id}-${index}`} anime={anime} />
           ))}
         </div>
 
+        {/* Nút xem thêm */}
         <div className="flex justify-center mt-12 mb-8">
             <Link 
                 to="/danh-sach"
