@@ -16,7 +16,8 @@ export default function FavoritesPage() {
           .select('*')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
-        if (data) setFavorites(data);
+        if (data) setFavorites(data); 
+        
       }
       setIsLoading(false);
     };

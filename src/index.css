@@ -4,14 +4,48 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
+/* ─── Base ──────────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
   font-family: 'Poppins', sans-serif;
 }
 
-/* Swiper Custom Styles */
+/* ─── GPU acceleration cho các phần tử hay animate ─────────────────────────── */
+.group:hover img,
+.group img {
+  will-change: transform;
+}
+
+/* Precompose các overlay gradient — tránh repaint */
+[class*="bg-gradient-to"] {
+  will-change: auto;
+}
+
+/* Swiper buttons/fade không gây layout shift */
+.swiper-slide {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ─── Custom Scrollbar ──────────────────────────────────────────────────────── */
+.custom-scrollbar::-webkit-scrollbar        { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track  { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb  { background: #d9534f55; border-radius: 2px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d9534f; }
+
+/* ─── Swiper ────────────────────────────────────────────────────────────────── */
 .swiper-button-next,
 .swiper-button-prev {
   color: #ef4444;
@@ -22,16 +56,15 @@
   font-size: 20px;
 }
 
-.swiper-pagination-bullet {
-  background: #6b7280;
-}
-
-.swiper-pagination-bullet-active {
-  background: #ef4444;
-}
+.swiper-pagination-bullet        { background: #6b7280; }
+.swiper-pagination-bullet-active  { background: #ef4444; }
 
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
   color: #dc2626;
 }
 
+/* ─── Image optimization hint ───────────────────────────────────────────────── */
+img {
+  content-visibility: auto;
+}
