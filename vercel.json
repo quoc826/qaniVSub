@@ -1,11 +1,40 @@
 {
-  "rewrites": [
+  "headers": [
     {
-      "source": "/api/(.*)",
-      "destination": "https://phimapi.com/$1"
+      "source": "/api/danh-sach",
+      "headers": [
+        { "key": "Cache-Control", "value": "s-maxage=14400, stale-while-revalidate=86400" },
+        { "key": "CDN-Cache-Control", "value": "max-age=14400" },
+        { "key": "Cloudflare-CDN-Cache-Control", "value": "max-age=14400" }
+      ]
     },
     {
-      "source": "/(.*)",
+      "source": "/api/the-loai",
+      "headers": [
+        { "key": "Cache-Control", "value": "s-maxage=14400, stale-while-revalidate=86400" },
+        { "key": "CDN-Cache-Control", "value": "max-age=14400" },
+        { "key": "Cloudflare-CDN-Cache-Control", "value": "max-age=14400" }
+      ]
+    },
+    {
+      "source": "/api/phim",
+      "headers": [
+        { "key": "Cache-Control", "value": "s-maxage=14400, stale-while-revalidate=86400" },
+        { "key": "CDN-Cache-Control", "value": "max-age=14400" },
+        { "key": "Cloudflare-CDN-Cache-Control", "value": "max-age=14400" }
+      ]
+    },
+    {
+      "source": "/api/tim-kiem",
+      "headers": [
+        { "key": "Cache-Control", "value": "s-maxage=900, stale-while-revalidate=3600" },
+        { "key": "CDN-Cache-Control", "value": "max-age=900" }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
   ]

@@ -7,6 +7,7 @@ import { phimApi } from '../services/phimApi';
 import SEO from './SEO';
 import LazyImage from './LazyImage';
 import AnimeCard from './AnimeCard';
+import { SkeletonGrid, SkeletonBanner, SkeletonSwiper } from './SkeletonCard';
 
 // Import CSS của Swiper
 import 'swiper/css';
@@ -52,14 +53,47 @@ const fetchHomeData = async () => {
 };
 
 export default function Home() {
+  // Lấy data từ localStorage để render ngay lập tức (trước khi API xong)
+  const cachedFallback = (() => {
+    try {
+      const raw = localStorage.getItem('qani_cache_home_page');
+      if (raw) {
+        const { data, ts } = JSON.parse(raw);
+        if (Date.now() - ts < 3600000) return data; // 1 giờ
+      }
+    } catch {}
+    return undefined;
+  })();
+
   const { data, error, isLoading } = useSWR('home-data', fetchHomeData, {
     revalidateOnFocus: false,
-    dedupingInterval: 300000, // Cache dữ liệu trong 5 phút
+    dedupingInterval: 3600000, // Cache SWR 1 giờ
+    fallbackData: cachedFallback,
+    onSuccess: (fresh) => {
+      try {
+        localStorage.setItem('qani_cache_home_page', JSON.stringify({ data: fresh, ts: Date.now() }));
+      } catch {}
+    },
   });
 
-  if (isLoading) return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#0b0f1a]">
-      <div className="w-10 h-10 border-2 border-[#d9534f] border-t-transparent animate-spin rounded-full"></div>
+  if (isLoading || !data) return (
+    <div className="min-h-screen bg-[#0b0f1a] text-white pb-24 selection:bg-[#d9534f]">
+      <SEO
+        title="Xem Anime Vietsub Online Chất Lượng Cao Mới Nhất 2026"
+        description="QaniVietSub - Nơi xem anime vietsub online nhanh nhất, chất lượng Full HD."
+      />
+      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="flex items-center gap-4 pt-12 mb-8">
+          <h2 className="text-3xl italic tracking-tighter uppercase font-oswald font-bold text-[#d9534f]">Phim Mới Cập Nhật</h2>
+          <div className="h-[1px] flex-1 bg-[#d9534f]/20" />
+        </div>
+        <SkeletonSwiper count={6} />
+        <SkeletonBanner />
+        <div className="flex items-center gap-4 mb-8">
+          <h2 className="pl-3 text-2xl tracking-wide text-white uppercase border-l-4 font-oswald font-bold border-[#d9534f]">Anime Đang Chiếu</h2>
+        </div>
+        <SkeletonGrid count={18} />
+      </div>
     </div>
   );
 

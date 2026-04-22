@@ -4,7 +4,8 @@ import useSWR from 'swr';
 import { phimApi } from '../services/phimApi';
 import LazyImage from './LazyImage';
 import CommentSection from './CommentSection'; 
-import SEO from './SEO'; 
+import SEO from './SEO';
+import { SkeletonDetail } from './SkeletonCard';
 
 const fetchDetail = async (slug: string) => {
   const data = await phimApi.getAnimeDetail(slug);
@@ -44,11 +45,7 @@ export default function DetailPage() {
     }
   };
 
-  if (isLoading) return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#0b0f1a]">
-      <div className="w-10 h-10 border-2 border-[#d9534f] border-t-transparent animate-spin rounded-full"></div>
-    </div>
-  );
+  if (isLoading) return <SkeletonDetail />;
 
   if (error || !movie) return (
     <div className="flex items-center justify-center min-h-screen bg-[#0b0f1a] text-white">

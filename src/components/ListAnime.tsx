@@ -4,6 +4,7 @@ import useSWR from 'swr';
 import { phimApi } from '../services/phimApi';
 import AnimeCard from './AnimeCard';
 import SEO from './SEO';
+import { SkeletonGrid } from './SkeletonCard';
 
 // Lọc Anime Nhật Bản và loại bỏ các phần trùng lặp
 const filterAnime = (animeList: any[]) => {
@@ -95,15 +96,27 @@ export default function ListAnime() {
 
         {error && <div className="mb-8 font-bold text-center text-red-500">Lỗi không thể tải dữ liệu!</div>}
 
-        <div className={`transition-opacity duration-300 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
+        {/* Skeleton khi đang tải — giữ layout không nhảy */}
+        <div className={`transition-opacity duration-300 ${isLoading ? 'opacity-100' : 'opacity-100'}`}>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-            {gridCards.map((anime: any, index: number) => (
-              <AnimeCard 
-                key={`${anime.id}-${index}`} 
-                anime={anime} 
-                priority={index < 6} // Tăng tốc độ tải cho 6 ảnh đầu tiên
-              />
-            ))}
+            {isLoading
+              ? Array.from({ length: 24 }).map((_, i) => (
+                  <div key={i} className="relative flex flex-col animate-pulse">
+                    <div className="aspect-[2/3] rounded-sm bg-[#1e2438]" />
+                    <div className="pt-2 pb-1 space-y-1.5">
+                      <div className="h-3 bg-[#1e2438] rounded w-full" />
+                      <div className="h-3 bg-[#1e2438] rounded w-3/4" />
+                    </div>
+                  </div>
+                ))
+              : gridCards.map((anime: any, index: number) => (
+                  <AnimeCard
+                    key={`${anime.id}-${index}`}
+                    anime={anime}
+                    priority={index < 6}
+                  />
+                ))
+            }
           </div>
         </div>
 

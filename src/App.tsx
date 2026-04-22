@@ -1,5 +1,7 @@
-import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { supabase } from './services/supabaseClient';
+import { phimApi } from './services/phimApi';
 
 import Header from './components/Header';
 import Home from './components/Home';
@@ -11,6 +13,46 @@ import Register from './components/Register';
 import Footer from './components/Footer';
 import FavoritesPage from './components/FavoritesPage';
 import AiChatBox from './chat/AiChatBox';
+
+// Prefetch dữ liệu trang chủ ngay khi module load (trước cả khi App render)
+// Kết quả sẽ được cache vào localStorage — khi user đến trang '/' sẽ hiển thị tức thì
+const prefetchHomeData = () => {
+  Promise.all([
+    phimApi.getAnimeList('hoat-hinh', 1, 40),
+    phimApi.getAnimeList('hoat-hinh', 2, 40),
+  ]).catch(() => {}); // silent — chỉ warm up cache
+};
+prefetchHomeData();
+
+// Component bảo vệ trang — chỉ render khi đã đăng nhập
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const [authState, setAuthState] = useState<'loading' | 'authenticated' | 'unauthenticated'>('loading');
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setAuthState(session ? 'authenticated' : 'unauthenticated');
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthState(session ? 'authenticated' : 'unauthenticated');
+    });
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  if (authState === 'loading') {
+    return (
+      <div className="min-h-screen bg-[#0b0f1a] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#d9534f] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (authState === 'unauthenticated') {
+    return <Navigate to="/dang-nhap" replace />;
+  }
+
+  return <>{children}</>;
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -33,7 +75,7 @@ function App() {
             <Route path="/danh-sach/:slug"   element={<ListAnime />} />
             <Route path="/the-loai/:slug"    element={<ListAnime />} />
             <Route path="/tim-kiem/:keyword" element={<ListAnime />} />
-            <Route path="/yeu-thich"         element={<FavoritesPage />} />
+            <Route path="/yeu-thich"         element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
             <Route path="/dang-nhap"         element={<Login />} />
             <Route path="/dang-ky"           element={<Register />} />
           </Routes>

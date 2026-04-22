@@ -31,7 +31,10 @@ export default function Register() {
 
       if (error) throw error;
 
-      alert("Đăng ký thành công! Bạn có thể đăng nhập ngay.");
+      // Sign out ngay để tránh Supabase tự đăng nhập sau signUp
+      await supabase.auth.signOut();
+
+      alert("Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.");
       navigate('/dang-nhap');
     } catch (error: any) {
       alert("Lỗi đăng ký: " + error.message);
